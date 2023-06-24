@@ -28,3 +28,38 @@ Keep log in __EFMigrationHistory table
 > dotnet tool install dotnet-ef -g
 ```
 
+---
+
+### REST APIs
+
+#### Projects
+```
+GET /api/v1/projects
+```
+```
+GET /api/v1/projects/5
+```
+
+```
+POST /api/v1/projects
+```
+
+Request payload:
+```
+{
+  "name": "Demo 1",
+  "workflow": "Default"
+}
+
+```
+Response:
+```
+201 Created
+```
+```
+400 Bad Request
+{
+   "error": "Workflow Default is not found"
+}
+```
+

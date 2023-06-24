@@ -12,7 +12,7 @@ namespace DevDynamo.Web
 
       // Add services to the container.
       var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-      
+
       Console.WriteLine(nameof(AppDb));
       Console.WriteLine(builder.Configuration.GetConnectionString(nameof(AppDb)));
 
@@ -51,9 +51,15 @@ namespace DevDynamo.Web
       app.UseAuthentication();
       app.UseAuthorization();
 
+
+      //app.MapControllerRoute(
+      //    name: "ApiV1",
+      //    pattern: "api/v1/{controller=Home}/{action=Index}/{id?}", new { Area = "ApiV1" });
+
       app.MapControllerRoute(
           name: "default",
           pattern: "{controller=Home}/{action=Index}/{id?}");
+
       app.MapRazorPages();
 
       app.Run();
