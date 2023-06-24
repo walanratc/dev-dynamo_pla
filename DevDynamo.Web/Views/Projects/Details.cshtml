@@ -1,0 +1,12 @@
+﻿@model Project
+
+<h3>@Model.Name</h3>
+
+I have @Model.WorkflowSteps.Count workflow steps.
+
+@foreach(var step in Model.WorkflowSteps) {
+  <div>
+    @step.FromStatus == @step.Action 
+    ==> @step.ToStatus
+  </div>
+}
