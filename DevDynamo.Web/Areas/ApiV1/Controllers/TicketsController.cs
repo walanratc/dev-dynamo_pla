@@ -69,12 +69,10 @@ namespace DevDynamo.Web.Areas.ApiV1.Controllers
                 return NotFound(new ProblemDetails() { Title = "Ticket is not found" });
             }
 
-            var t = new Ticket();
-            t = ticket;
-            t.Title = request.Title;
-            t.Description = request.Description;
+            ticket.Title = request.Title;
+            ticket.Description = request.Description;
 
-            db.Tickets.Update(t);
+            db.Tickets.Update(ticket);
             db.SaveChanges();
 
             return NoContent();
