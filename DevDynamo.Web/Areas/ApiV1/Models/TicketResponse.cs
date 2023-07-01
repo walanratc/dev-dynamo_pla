@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DevDynamo.Web.Areas.ApiV1.Models
 {
-  public class TicketResponse
+    public class TicketResponse
     {
         public int Id { get; set; }
         public string Title { get; set; } = null!;
@@ -12,13 +12,13 @@ namespace DevDynamo.Web.Areas.ApiV1.Models
 
         public static TicketResponse FromModel(Ticket t)
         {
-          return new TicketResponse
-          {
-            Id = t.Id,
-            Title = t.Title,
-            Description = t.Description,
-            Status = t.Status,
-          };
+            return new TicketResponse
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Status = t.Status,
+                Description = t.Description
+            };
         }
-  }
+    }
 }

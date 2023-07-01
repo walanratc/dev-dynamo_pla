@@ -9,13 +9,13 @@ namespace DevDynamo.Models
 {
     public class Ticket
     {
-        public Ticket()
+        public Ticket(string title, string status)
         {
+            Title = title;
+            Status = status;
         }
 
         public int Id { get; set; }
-
-        public Guid ProjectId { get; set; }
 
         [StringLength(100)]
         public string Title { get; set; } = null!;
@@ -24,12 +24,5 @@ namespace DevDynamo.Models
 
         [StringLength(50)]
         public string Status { get; set; } = null!;
-
-        public void Initial(string title, Guid projectid, string status)
-        {
-            Title = title;
-            ProjectId = projectid;
-            Status = status;
-        }
     }
 }

@@ -2,12 +2,14 @@
 using DevDynamo.Web.Areas.ApiV1.Models;
 using DevDynamo.Web.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
+using Newtonsoft.Json;
 
 namespace DevDynamo.Web.Areas.ApiV1.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class TicketsController : ControllerBase
+    public class TicketsController : AppControllerBase
     {
         private readonly AppDb db;
 
@@ -29,31 +31,31 @@ namespace DevDynamo.Web.Areas.ApiV1.Controllers
             var item = db.Tickets.SingleOrDefault(x => x.Id == id);
             if (item is null)
             {
-                return NotFound(new ProblemDetails() { Title = "Ticket is not found" });
+                return AppNotFound(nameof(Ticket), id);
             }
+            
             return TicketResponse.FromModel(item);
         }
 
         [HttpPost]
         public ActionResult<TicketResponse> Create(CreateTicketRequest request)
         {
-            //Initial Status
-            var workflow = db.WorkflowSteps.SingleOrDefault(x => x.Id == 1);
-            if (workflow is null)
-            {
-                return NotFound(new ProblemDetails() { Title = "Workflow is not found" });
-            }
-
-            var project = db.Projects.SingleOrDefault(x => x.Id.ToString() == request.Project);
+            var project = db.Projects.SingleOrDefault(x => x.Id == request.ProjectId);
             if (project is null)
             {
-                return NotFound(new ProblemDetails() { Title = "ProjectID is not found" });
+                return AppNotFound(nameof(Ticket), request.ProjectId);
             }
 
-            var t = new Ticket();
-            t.Initial(request.Title, Guid.Parse(request.Project), workflow.ToStatus);
+            //Initial Status
+            var workflow = project.WorkflowSteps.SingleOrDefault(x => x.FromStatus == "[*]");
+            if (workflow is null)
+            {
+                return AppNotFound(nameof(WorkflowStep));
+            }
 
-            db.Tickets.Add(t);
+            var t = new Ticket(request.Title, workflow.ToStatus);
+            project.Tickets.Add(t);
+            
             db.SaveChanges();
 
             var res = TicketResponse.FromModel(t);
@@ -66,7 +68,7 @@ namespace DevDynamo.Web.Areas.ApiV1.Controllers
             var ticket = db.Tickets.SingleOrDefault(x => x.Id == id);
             if (ticket is null)
             {
-                return NotFound(new ProblemDetails() { Title = "Ticket is not found" });
+                return AppNotFound(nameof(Ticket), id);
             }
 
             ticket.Title = request.Title;
@@ -77,6 +79,5 @@ namespace DevDynamo.Web.Areas.ApiV1.Controllers
 
             return NoContent();
         }
-
     }
 }
