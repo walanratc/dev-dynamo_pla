@@ -20,7 +20,7 @@ jobs:
     - name: Get last commit message
       id: check
       run: |
-        echo "last_commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+        echo "::set-output name=last_commit_message::$(git log -1 --pretty=%B)"
 
   build:
     needs: check
