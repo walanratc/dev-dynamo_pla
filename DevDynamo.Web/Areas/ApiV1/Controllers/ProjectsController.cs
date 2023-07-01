@@ -8,7 +8,7 @@ namespace DevDynamo.Web.Areas.ApiV1.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class ProjectsController : ControllerBase
+    public class ProjectsController : AppControllerBase
     {
         private readonly AppDb db;
 
@@ -31,7 +31,7 @@ namespace DevDynamo.Web.Areas.ApiV1.Controllers
             if (item is null)
             {
                 //return NotFound("Project not found");
-                return NotFound(new ProblemDetails() { Title = "Project is not found" });
+                return AppNotFound(nameof(Project), id); //NotFound(new ProblemDetails() { Title = "Project is not found" });
             }
             return ProjectResponse.FromModel(item);
         }
@@ -44,7 +44,14 @@ namespace DevDynamo.Web.Areas.ApiV1.Controllers
             var path = $"./WorkflowTemplates/{request.Template}.txt";
             if (!System.IO.File.Exists(path))
             {
-                return BadRequest(new ProblemDetails { Title = $"Template {request.Template} not found" });
+                String[] fileNames = Directory.GetFiles(@"./WorkflowTemplates", "*.txt").Select(fileName => Path.GetFileNameWithoutExtension(fileName)).ToArray();
+
+                string allTemplatesNname = (fileNames.Any()) ? string.Join(", ", fileNames.Take(fileNames.Length - 1)) + " and " + fileNames.Last() : fileNames[0];
+
+
+                string messageError = $"Template {request.Template} not found.  All available template are {allTemplatesNname}.";
+                //(new ProblemDetails { Title = $"Template {request.Template} not found.  All available template are {allTemplatesNname}." });
+                return AppNotFound(nameof(Project), message: messageError);
             }
 
             var workflow = System.IO.File.ReadAllText(path);
