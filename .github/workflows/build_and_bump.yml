@@ -1,4 +1,4 @@
-name: Run .NET Tool
+name: Build, Test, and Bump
 
 on:
   push:
@@ -37,9 +37,18 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.0'
+        dotnet-version: '6.0'
 
-    - name: Install .NET tool command
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+
+    - name: Install dotnet-ver
       run: dotnet tool install -g dotnet-ver
 
     - name: Bump version
