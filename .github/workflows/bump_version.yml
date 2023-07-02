@@ -1,4 +1,4 @@
-name: Bump Version
+name: Bump Version on Develop
 
 on:
   push:
@@ -6,7 +6,25 @@ on:
       - develop
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      last_commit_message: ${{ steps.check.outputs.last_commit_message }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_PAT }}
+
+    - name: Get last commit message
+      id: check
+      run: |
+        echo "::set-output name=last_commit_message::$(git log -1 --pretty=%B)"
+    
   bump_version:
+    needs: check
+    if: ${{ !startsWith(needs.check.outputs.last_commit_message, 'Bump version to') }}
     runs-on: ubuntu-latest
 
     steps:
