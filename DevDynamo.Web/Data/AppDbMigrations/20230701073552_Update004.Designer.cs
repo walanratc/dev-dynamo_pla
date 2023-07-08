@@ -4,6 +4,7 @@ using DevDynamo.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DevDynamo.Web.Data.AppDbMigrations
 {
     [DbContext(typeof(AppDb))]
-    partial class AppDbModelSnapshot : ModelSnapshot
+    [Migration("20230701073552_Update004")]
+    partial class Update004
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +58,7 @@ namespace DevDynamo.Web.Data.AppDbMigrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ProjectId")
+                    b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -113,7 +115,9 @@ namespace DevDynamo.Web.Data.AppDbMigrations
                 {
                     b.HasOne("DevDynamo.Models.Project", null)
                         .WithMany("Tickets")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DevDynamo.Models.WorkflowStep", b =>
